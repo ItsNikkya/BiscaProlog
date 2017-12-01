@@ -44,7 +44,8 @@ shuffle(D, SD) :-
 
 % representation of a hand - in bisca there are (up to?) three cards in a player's hand
 % not being used at the moment
-hand([c(R1, S1), c(R2, S2), c(R3, S3)]).
+% hand([c(R1, S1), c(R2, S2), c(R3, S3)]).
+hand([c(_, _), c(_, _), c(_, _)]).
 
 % trump/3: returns a clean deck with the trump card last, outputted for later use
 % Make Prolog Great Again!
@@ -61,15 +62,14 @@ pick_first(c(R,S), [SD|c(R,S)], [c(R,S)|SD]).
 % deal_cards/5: deals cards for both players
 % on an empty shuffled deck it does nothing
 % dealcards(+Deck, -Hand1, -Hand2, -Remaining Deck, -Counter)
-
 deal_cards([],[],[],[],_):- !.
 deal_cards(RD,[],[],RD, 0):-!.
-
 deal_cards(D, [S1|H1], [S2|H2], RD, C) :-
 	C2 is C-1,
 	dc(S1, RD1, D),
 	dc(S2, RD2, RD1),
 	deal_cards(RD2, H1, H2, RD, C2).
+
 % dc/3: returns the first card of the deck, and the modified deck
 % dc(-Card, -Deck, +Deck)
 dc(_,[],[]).
@@ -78,8 +78,15 @@ dc(H, SD, [H|SD]).
 % ---------------- 2a entrega------------------
 % just starts the game....
 % startGame(+Deck, Trump, Hand1, Hand2, -Remaining Deck, Counter)
-
 startGame(D, T, J1, J2, RD, C):-
   shuffle(D, SD1),
   trump(SD1,SD2, T),
   deal_cards(SD2,J1,J2,RD,C).
+
+% pick a card (first, as it is) from a given Hand
+% choose_card( Hand, Card)
+choose_card(H, C):-
+  hand(H),
+  member(C, H).
+
+  
